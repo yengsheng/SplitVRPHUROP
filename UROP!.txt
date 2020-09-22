@@ -1,0 +1,5 @@
+Apply machine learning to solve routing problems.
+Cluster the ?? points. So they split SG up to different zone. Different drivers will send to different zones.
+Traveling salesman problem? We have a number of points and we know the distance between every pair of the points. We start from one point, we touch every other point and get back to the start.
+
+Instead of traveling salesman, suppose I drive my truck and deliver, but can only load so many amounts. Hence, can be done by several drivers by zone. Vehicle routing problem. Introduce another constrain in terms of pathing. Size/weight constraints. Truck capacity constraint. 
