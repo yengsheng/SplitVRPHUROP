@@ -6,7 +6,6 @@ Created on Wed Oct 21 19:59:37 2020
 """
 import matplotlib.pyplot as plt
 from matplotlib.path import Path
-import matplotlib.patches as patches
 import os
 
 def file_read(path):
