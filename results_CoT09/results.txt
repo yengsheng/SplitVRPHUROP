@@ -1,7 +1,0 @@
-original: 1177.675
-split: 1053.238
-
-Split coordinates:
-[-9.0, -8.0] 504-508 [total demand]
-[18.0, 8.0] 453-455
-[14.0, 7.0] 450-452

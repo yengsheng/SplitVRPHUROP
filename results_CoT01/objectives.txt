@@ -1,3 +1,0 @@
-original: 526.970
-roundup: 524.810
-x10split: 524.927

@@ -44,4 +44,7 @@ def convert(filename):
 dirs = tuple(os.walk('.\\SDVRP instances'))
 for i in dirs[1:]:
     for j in i[2]:
-        convert(i[0] + '\\' + j)
+        if j[-4:] == '.cri':
+            convert(i[0] + '\\' + j)
+
+
