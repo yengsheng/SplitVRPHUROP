@@ -9,10 +9,10 @@ import subprocess
 from apriorisplit import convertionista
 import shutil
 import os
-from turtle import *
+# from turtle import *
 
 # The following code makes the turtle move it move it.
-turt_colors = ['red', 'blue', 'orange', 'green', 'purple', 'grey', 'black', 'brown', 'cyan', 'magenta', 'teal', 'olive', 'maroon']
+# turt_colors = ['red', 'blue', 'orange', 'green', 'purple', 'grey', 'black', 'brown', 'cyan', 'magenta', 'teal', 'olive', 'maroon']
 
 def file_read(path):
     r = open(path)
@@ -42,9 +42,9 @@ def file_read(path):
 # This part saves the turtle plot into the respective folders.
 
 info_dump = {}
-bob = Turtle()
-bob.speed(0)
-setworldcoordinates(-50, -50, 50, 50)
+# bob = Turtle()
+# bob.speed(0)
+# setworldcoordinates(-50, -50, 50, 50)
 path = 'C:\\Users\\Yong Sheng\\Desktop\\UROP\\SplitVRPHUROP\\SDVRP instances'
 dirs = tuple(os.walk(path))
 for directory in dirs[1:]:
@@ -78,13 +78,13 @@ for directory in dirs[1:]:
         for i in range(len(negative_indexes)-1):
             route_list.append(paths[negative_indexes[i] : negative_indexes[i+1]])
 
-        col_num = 0
+        # col_num = 0
         visited = ['']
         for i in route_list:
-            try:
-                bob.pencolor(turt_colors[col_num])
-            except IndexError:
-                col_num = 0
+            # try:
+            #     # bob.pencolor(turt_colors[col_num])
+            # except IndexError:
+            #     col_num = 0
             for j in i:
                 goto_traj = [node_dict[abs(int(j))+1][0], node_dict[abs(int(j))+1][1]]
                 bob.goto(goto_traj)
