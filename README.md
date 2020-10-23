@@ -1,5 +1,6 @@
 # SplitVRPHUROP
 Useful .py files:
+
 convert_to_tsplib.py: This file moves into each child file in the SDVRP instances, searches for the .cri file, and converts them into the TSPLIB format.
 
 split_and_sol.py: Takes all the .txt files which have been converted from convert_to_tsplib.py, and creates two split versions as .vrp files: 
