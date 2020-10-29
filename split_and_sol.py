@@ -16,6 +16,8 @@ def file_read(path):
     r.close()
     return x
 
+############### FOR INITIAL GIVEN INSTANCES #####################
+
 # #This part converts all .txt files, which have been converted to TSPLIB format, and to create both split formats out of it.
 path = '.\\SDVRP instances'
 dirs = tuple(os.walk(path))
@@ -36,3 +38,20 @@ for i in dirs[1:]:
             subprocess.Popen('powershell.exe .\\vrp_rtr.exe -f ' + j + ' -out '+ j[:-4] + '.sol')
 
 
+############### FOR CUSTOM INSTANCES #####################
+
+# #This part converts all .txt files, which have been converted to TSPLIB format, and to create both split formats out of it.
+path = '.\\SDVRP instances\\custom_instances'
+dirs = tuple(os.walk(path))
+for i in dirs[0][2]:
+    if i[-3:] == 'txt':
+        p = i
+        convertionista(path + '\\' + p)
+
+# #This part takes in all the .vrp files, and the .txt files, and runs them through vrp_rtr.exe.
+path = '.\\SDVRP instances\\custom_instances'
+entries = os.listdir('.\\SDVRP instances\\custom_instances')
+os.chdir(path)
+for i in entries:
+    if i[-3:] == 'txt':
+        subprocess.call('powershell.exe .\\vrp_rtr.exe -f ' + i + ' -out '+ i[:-4] + '.sol')
