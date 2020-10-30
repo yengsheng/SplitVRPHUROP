@@ -6,6 +6,7 @@ Created on Thu Oct 29 15:41:57 2020
 """
 import os
 import numpy as np
+import pandas as pd
 def distance(x, y):
     return (x**2 + y**2)**(1/2)
 def file_read(path):
@@ -32,12 +33,18 @@ final_dict = {
     'median_demand': [],	
     '25th_demand': [],	
     '75th_demand': [],
-    'sd_demand': [],	
+    'sd_demand': [],
+    'original_objective': [],
+    '10x_split_objective' : [],
+    'rounded_split_objective': [],	
     'split_in_10x': [],	
-    'split_in_rounded': []}
+    'split_in_rounded': [],
+    'num_of_10x_splits': [],
+    'num_of_rounded_splits': []}
 for i in dirs[1:]:
     for j in i[2]:
         if j[-3:] == 'txt':
+            final_dict['original_objective'].append(file_read(i[0] + '\\'+ j[:-4] + '.sol')[7][:-2])
             distances = []
             demands = []
             x = file_read(i[0]+'\\'+j)
@@ -71,9 +78,86 @@ for i in dirs[1:]:
             final_dict['25th_demand'].append(np.percentile(demands, 25))
             final_dict['75th_demand'].append(np.percentile(demands, 75))
             final_dict['sd_demand'].append(np.std(demands))
+            x10file = file_read(i[0] + '\\'+ j[:-4] + '_splitx10_0.vrp')
+            x10soln = file_read(i[0] + '\\'+ j[:-4] + '_splitx10_0.sol')
+            rounddownfile = file_read(i[0] + '\\'+ j[:-4] + '_split0.vrp')
+            rounddownsoln = file_read(i[0] + '\\'+ j[:-4] + '_split0.sol')
+            paths = x10soln[0].split()[1:]
+            first_cut_idx = x10file.index("NODE_COORD_SECTION\n")
+            second_cut_idx = x10file.index('DEMAND_SECTION\n')
+            third_cut_idx = x10file.index('DEPOT_SECTION\n')
+            
+            locations = x10file[first_cut_idx+1:second_cut_idx]
+            demands = x10file[second_cut_idx+1: third_cut_idx]
+            node_dict = {}
+            for k in range(len(locations)):
+                n, x, y = locations[k].split()
+                d = demands[k].split()[1]
+                node_dict[int(n)] = [float(x), float(y), float(d)]
+                
+            negative_indexes = []
+            for l in paths:
+                if int(l) < 0:
+                    negative_indexes.append(paths.index(l)) 
+            
+            route_list = []
+            for m in range(len(negative_indexes)-1):
+                route_list.append(paths[negative_indexes[m] : negative_indexes[m+1]])
+            visited = ['']
+            x10splits = []
+            for locs in route_list:
+                for loc in locs:
+                    goto_traj = [node_dict[abs(int(loc))+1][0], node_dict[abs(int(loc))+1][1]]
+                    if goto_traj in visited and goto_traj != visited[-1]:
+                        x10splits.append([goto_traj])
+                    visited.append(goto_traj)
+            if x10splits == []:
+                final_dict['num_of_10x_splits'].append(0)
+                final_dict['split_in_10x'].append('no')
+            else:
+                final_dict['num_of_10x_splits'].append(len(x10splits))
+                final_dict['split_in_10x'].append('yes')
+            final_dict['10x_split_objective'].append(x10soln[7][:-2])
+            
+            paths = rounddownsoln[0].split()[1:]
+            first_cut_idx = rounddownfile.index("NODE_COORD_SECTION\n")
+            second_cut_idx = rounddownfile.index('DEMAND_SECTION\n')
+            third_cut_idx = rounddownfile.index('DEPOT_SECTION\n')
+            
+            locations = rounddownfile[first_cut_idx+1:second_cut_idx]
+            demands = rounddownfile[second_cut_idx+1: third_cut_idx]
+            node_dict = {}
+            for k in range(len(locations)):
+                n, x, y = locations[k].split()
+                d = demands[k].split()[1]
+                node_dict[int(n)] = [float(x), float(y), float(d)]
+                
+            negative_indexes = []
+            for l in paths:
+                if int(l) < 0:
+                    negative_indexes.append(paths.index(l)) 
+            
+            route_list = []
+            for m in range(len(negative_indexes)-1):
+                route_list.append(paths[negative_indexes[m] : negative_indexes[m+1]])
+            visited = ['']
+            rounddownsplits = []
+            for locs in route_list:
+                for loc in locs:
+                    goto_traj = [node_dict[abs(int(loc))+1][0], node_dict[abs(int(loc))+1][1]]
+                    if goto_traj in visited and goto_traj != visited[-1]:
+                        rounddownsplits.append([goto_traj])
+                    visited.append(goto_traj)
+            if rounddownsplits == []:
+                final_dict['num_of_rounded_splits'].append(0)
+                final_dict['split_in_rounded'].append('no')
+            else:
+                final_dict['num_of_rounded_splits'].append(len(rounddownsplits))
+                final_dict['split_in_rounded'].append('yes')
+            final_dict['rounded_split_objective'].append(rounddownsoln[7][:-2])
 
-
-
+df = pd.DataFrame(final_dict)
+df.to_csv('dataset.csv', index=False)
 
 
 '''
