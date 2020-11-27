@@ -40,7 +40,9 @@ final_dict = {
     'split_in_10x': [],	
     'split_in_rounded': [],
     'num_of_10x_splits': [],
-    'num_of_rounded_splits': []}
+    'num_of_rounded_splits': [],
+    'highest_split_distance_10x': [],
+    'highest_split_distance_rounded': []}
 for i in dirs[1:]:
     for j in i[2]:
         if j[-3:] == 'txt':
@@ -105,18 +107,23 @@ for i in dirs[1:]:
                 route_list.append(paths[negative_indexes[m] : negative_indexes[m+1]])
             visited = ['']
             x10splits = []
+            x10split_distances = []
             for locs in route_list:
                 for loc in locs:
                     goto_traj = [node_dict[abs(int(loc))+1][0], node_dict[abs(int(loc))+1][1]]
                     if goto_traj in visited and goto_traj != visited[-1]:
                         x10splits.append([goto_traj])
+                        x10split_distances.append((goto_traj[0]**2 + goto_traj[1]**2)**(1/2))
                     visited.append(goto_traj)
             if x10splits == []:
                 final_dict['num_of_10x_splits'].append(0)
                 final_dict['split_in_10x'].append('no')
+                final_dict['highest_split_distance_10x'].append(0)
             else:
                 final_dict['num_of_10x_splits'].append(len(x10splits))
                 final_dict['split_in_10x'].append('yes')
+                final_dict['highest_split_distance_10x'].append(max(x10split_distances))
+                
             final_dict['10x_split_objective'].append(x10soln[7][:-2])
             
             paths = rounddownsoln[0].split()[1:]
@@ -142,22 +149,29 @@ for i in dirs[1:]:
                 route_list.append(paths[negative_indexes[m] : negative_indexes[m+1]])
             visited = ['']
             rounddownsplits = []
+            rounddown_distances = []
             for locs in route_list:
                 for loc in locs:
                     goto_traj = [node_dict[abs(int(loc))+1][0], node_dict[abs(int(loc))+1][1]]
                     if goto_traj in visited and goto_traj != visited[-1]:
                         rounddownsplits.append([goto_traj])
+                        rounddown_distances.append((goto_traj[0]**2 + goto_traj[1]**2)**(1/2))
+
                     visited.append(goto_traj)
             if rounddownsplits == []:
                 final_dict['num_of_rounded_splits'].append(0)
                 final_dict['split_in_rounded'].append('no')
+                final_dict['highest_split_distance_rounded'].append(0)
+
             else:
                 final_dict['num_of_rounded_splits'].append(len(rounddownsplits))
                 final_dict['split_in_rounded'].append('yes')
+                final_dict['highest_split_distance_rounded'].append(max(rounddown_distances))
+
             final_dict['rounded_split_objective'].append(rounddownsoln[7][:-2])
 
 df = pd.DataFrame(final_dict)
-df.to_csv('dataset.csv', index=False)
+df.to_csv('dataset_2.csv', index=False)
 
 
 '''
