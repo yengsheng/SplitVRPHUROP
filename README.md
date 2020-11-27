@@ -26,3 +26,9 @@ Uses turtle instead to draw the plots, which I've stopped using because of how s
 I plan on writing a .csv file with all the objective distances, split locations, and original demand for the split locations using this .py file.
 
 I've also included all the .eps files since they are much clearer plots
+
+### instance_generator.py:
+Create instances using RNG to generate instances for p01, p02, p03, p04, and p10. This file created 30 instances in TSPLIB format for each type
+
+### csv_generator.py:
+Creates a .csv file with all our current instances, with some features
