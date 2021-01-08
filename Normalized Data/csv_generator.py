@@ -42,7 +42,9 @@ final_dict = {
     'num_of_10x_splits': [],
     'num_of_rounded_splits': [],
     'highest_split_distance_10x': [],
-    'highest_split_distance_rounded': []}
+    'highest_split_distance_rounded': [],
+    'total_num_of_neighbors': [],
+    'avg_num_of_neighbors': []}
 
 for i in dirs[0][2]:
     if i[-3:] == 'txt':
@@ -57,6 +59,7 @@ for i in dirs[0][2]:
         third_cut_idx = x.index('DEPOT_SECTION\n')
         x2 = x[first_cut_idx+1:second_cut_idx]
         x3 = x[second_cut_idx+1:third_cut_idx]
+        points = []
         for index in range(1, len(x2)):
             _, a, b = x2[index].split()
             _, c = x3[index].split()
@@ -64,6 +67,15 @@ for i in dirs[0][2]:
             dist = distance(a, b)
             distances.append(dist)
             demands.append(c)
+            points.append([a, b])
+        total_neighbors = 0
+        for firsty in range(len(points)):
+            if distance(points[firsty][0], points[firsty][1]) >= 50:
+                for secondy in range(firsty, len(points)):
+                    if ((points[firsty][0] - points[secondy][0])**(2) + (points[firsty][1] - points[secondy][1])**(2))**(1/2) <= 15:
+                        total_neighbors += 1
+        final_dict['total_num_of_neighbors'].append(total_neighbors)
+        final_dict['avg_num_of_neighbors'].append(total_neighbors/len(points))
         final_dict['initial_name'].append(name)
         final_dict['capacity'].append(cap)
         final_dict['number_of_nodes'].append(len(x2) - 1)
@@ -172,7 +184,7 @@ for i in dirs[0][2]:
         final_dict['rounded_split_objective'].append(rounddownsoln[7][:-2])
 
 df = pd.DataFrame(final_dict)
-df.to_csv('dataset_2.csv', index=False)
+df.to_csv('dataset_3.csv', index=False)
 
 
 '''
